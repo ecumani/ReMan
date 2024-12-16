@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "reman",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
