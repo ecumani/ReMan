@@ -1,0 +1,21 @@
+meta {
+  name: get payment for property
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:5000/api/payments/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "is_paid":"true",
+    "electricity_bill":"500.00",
+    "date_paid": "2024-12-17"
+  
+  }
+  
+}

@@ -1,0 +1,17 @@
+meta {
+  name: update property
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:5000/api/properties/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "tenant_id": 2
+  }
+}

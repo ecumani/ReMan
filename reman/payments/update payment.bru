@@ -1,0 +1,21 @@
+meta {
+  name: update payment
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:5000/api/payments/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "is_paid":"true",
+    "electricity_bill":"500.00",
+    "date_paid": "2024-12-17"
+  
+  }
+  
+}

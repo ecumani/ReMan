@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 const bcrypt = require("bcrypt");
+router.use(express.json());
 
 router.post("/signup", async (req, res) => {
   const { name, email, phone_no, password, role } = req.body;

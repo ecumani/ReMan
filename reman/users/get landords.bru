@@ -1,0 +1,25 @@
+meta {
+  name: get landords
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:5000/api/landlord
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "street": "123 Main St",
+    "city": "Springfield",
+    "state": "IL",
+    "zip_code": "62704",
+    "property_no": "P1234",
+    "landlord_id": 1,
+    "rent": 1200.00,
+    "water_tax": 50.00,
+    "electricity_bill": 150.00
+  }
+}

@@ -1,0 +1,22 @@
+meta {
+  name: add property
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:5000/api/properties
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "street": "123 Main Street",
+    "city": "Springfield",
+    "state": "Illinois",
+    "zip_code": "62704",
+    "property_no": "A2",
+    "landlord_id": 1
+  }
+}
