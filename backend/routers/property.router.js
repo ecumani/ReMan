@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:landlord_id", async (req, res) => {
+router.get("/landlord/:landlord_id", async (req, res) => {
   const { landlord_id } = req.params;
 
   // Validate landlord_id
@@ -64,10 +64,11 @@ router.get("/:landlord_id", async (req, res) => {
   }
 
   try {
-    // Query to fetch all properties for the given landlord_id
+    // Query to fetch all properties for the given landlord_id, including tenant_id
     const query = `
         SELECT 
           p.property_id,
+          p.tenant_id,
           a.address_id,
           a.street,
           a.city,
@@ -86,6 +87,50 @@ router.get("/:landlord_id", async (req, res) => {
       return res
         .status(404)
         .json({ message: "No properties found for this landlord." });
+    }
+
+    res.status(200).json({
+      message: "Properties retrieved successfully.",
+      properties: result.rows,
+    });
+  } catch (err) {
+    console.error("Error retrieving properties:", err.message);
+    res.status(500).json({ error: "Failed to fetch properties." });
+  }
+});
+
+router.get("/tenant/:tenant_id", async (req, res) => {
+  const { tenant_id } = req.params;
+
+  // Validate tenant_id
+  if (!tenant_id) {
+    return res.status(400).json({ error: "Tenant ID is required." });
+  }
+
+  try {
+    // Query to fetch all properties for the given tenant_id
+    const query = `
+        SELECT 
+          p.property_id,
+          p.landlord_id,
+          a.address_id,
+          a.street,
+          a.city,
+          a.state,
+          a.zip_code,
+          a.property_no
+        FROM Property p
+        JOIN Address a ON p.address_id = a.address_id
+        WHERE p.tenant_id = $1
+        ORDER BY p.property_id;
+      `;
+
+    const result = await pool.query(query, [tenant_id]);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No properties found for this tenant." });
     }
 
     res.status(200).json({
