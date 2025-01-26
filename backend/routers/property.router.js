@@ -213,4 +213,58 @@ router.put("/:property_id", async (req, res) => {
   }
 });
 
+router.get("/:property_id", async (req, res) => {
+  const { property_id } = req.params;
+
+  // Validate property_id
+  if (!property_id || isNaN(property_id)) {
+    return res.status(400).json({ error: "Invalid or missing property_id." });
+  }
+
+  try {
+    // Query to fetch the property, associated address, tenant name, email, and occupancy status
+    const query = `
+     SELECT 
+    p.property_id,
+    p.landlord_id,
+    p.tenant_id,
+    a.address_id,
+    a.street,
+    a.city,
+    a.state,
+    a.zip_code,
+    a.property_no,
+    u.name AS tenant_name,
+    u.email AS tenant_email,
+    l.name AS landlord_name,
+    l.email AS landlord_email,
+    CASE 
+      WHEN p.tenant_id IS NOT NULL THEN true
+      ELSE false
+    END AS occupied
+  FROM Property p
+  JOIN Address a ON p.address_id = a.address_id
+  LEFT JOIN users u ON p.tenant_id = u.user_id
+  LEFT JOIN users l ON p.landlord_id = l.user_id -- Join for landlord details
+  WHERE p.property_id = $1;
+    `;
+
+    const result = await pool.query(query, [property_id]);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ error: `Property with ID ${property_id} not found.` });
+    }
+
+    res.status(200).json({
+      message: "Property retrieved successfully.",
+      property: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error retrieving property:", err.message);
+    res.status(500).json({ error: "Failed to fetch property." });
+  }
+});
+
 module.exports = router;
